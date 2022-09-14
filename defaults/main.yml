@@ -1,0 +1,15 @@
+---
+rpi_packages:
+  unattended_upgrades: false  # To allow for unattended upgrades, set this to true
+  common_packages:
+  - ca-certificates
+  - curl
+  - dnsutils
+  - git
+  - htop
+  - python3
+  - python3-pip
+  - rsync
+  - traceroute
+  - unattended-upgrades
+  - wget

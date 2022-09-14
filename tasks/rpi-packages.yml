@@ -1,0 +1,63 @@
+---
+- name: Upgrade system
+  apt:
+    upgrade: dist
+    # Need the force_apt_get until
+    # https://github.com/ansible/ansible/issues/56832
+    force_apt_get: true
+  register: rpi_packages_upgrade
+  retries: 5
+  until: rpi_packages_upgrade is success
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+    # Need the force_apt_get until
+    # https://github.com/ansible/ansible/issues/56832
+    force_apt_get: true
+  register: rpi_packages_update
+  retries: 5
+  until: rpi_packages_update is success
+
+- name: Install Common Packages
+  apt:
+    name: "{{ (item is mapping) | ternary(item.name, item) }}"
+    # install_recommends: false
+    update_cache: true
+    state: latest
+    # Need the force_apt_get until
+    # https://github.com/ansible/ansible/issues/56832
+    force_apt_get: true
+  register: rpi_packages_install_common
+  retries: 5
+  until: rpi_packages_install_common is success
+  with_items: "{{ rpi_packages.common_packages }}"
+
+- name: Clean up apt
+  apt:
+    autoremove: true
+    # Need the force_apt_get until
+    # https://github.com/ansible/ansible/issues/56832
+    force_apt_get: true
+
+- name: Copy unattended-upgrades configuration files in place
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/apt/apt.conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 10periodic
+    - 50unattended-upgrades
+  when: rpi_packages.unattended_upgrades is true
+
+- name: Disable unattended-upgrades
+  file:
+    path: "/etc/apt/apt.conf.d/{{ item }}"
+    state: absent
+  with_items:
+    - 10periodic
+    - 50unattended-upgrades
+  when: rpi_packages.unattended_upgrades is false

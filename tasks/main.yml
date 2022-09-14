@@ -1,0 +1,3 @@
+---
+- include: rpi-packages.yml
+  tags: rpi-packages
