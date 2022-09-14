@@ -1,6 +1,8 @@
 ---
 rpi_packages:
-  unattended_upgrades: false  # To allow for unattended upgrades, set this to true
+  # To allow for unattended upgrades, set this to true
+  unattended_upgrades: false
+  # List of common packages to install
   common_packages:
   - ca-certificates
   - curl
