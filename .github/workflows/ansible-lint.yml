@@ -23,8 +23,8 @@ jobs:
       # - name: Install required collections
       #   run: ansible-galaxy collection install -r collections/requirements.yml
 
-      - name: Run ansible-lint
-        run: ansible-lint *.yml
-      
+      # - name: Run ansible-lint
+      #   run: ansible-lint *.yml
+
       - name: Run yamllint
         run: yamllint .
