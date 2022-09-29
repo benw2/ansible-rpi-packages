@@ -1,0 +1,30 @@
+name: ansible-lint
+on: [push, pull_request]
+#  schedule:
+#    - cron: '0 0 1 * *'
+
+jobs:
+  lint:
+    name: ansible-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+
+      - name: Install ansible-lint
+        run: pip install ansible-lint yamllint
+
+      # - name: Install required collections
+      #   run: ansible-galaxy collection install -r collections/requirements.yml
+
+      - name: Run ansible-lint
+        run: ansible-lint *.yml
+      
+      - name: Run yamllint
+        run: yamllint .
